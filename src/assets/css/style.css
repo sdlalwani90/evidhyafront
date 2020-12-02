@@ -1476,7 +1476,7 @@ a.badge-hover:hover .badge, a.badge-hover:focus .badge, a.badge-hover:active .ba
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-
+    width: 90%;
 }
 .f_name{
 	font-size: 18px;

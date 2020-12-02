@@ -1,5 +1,5 @@
 import { Component, OnInit,ViewChild, ElementRef  } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router,ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
@@ -7,11 +7,12 @@ import 'rxjs/Rx';
 import { RestfullApiService } from '../../services/core/restfull-api.service';
 
 @Component({
-  selector: 'abe-new-batches',
-  templateUrl: './new-batches.component.html',
-  styleUrls: ['./new-batches.component.scss']
+  selector: 'abe-edit-batches',
+  templateUrl: './edit-batches.component.html',
+  styleUrls: ['./edit-batches.component.scss']
 })
-export class NewBatchesComponent implements OnInit {
+export class EditBatchesComponent implements OnInit {
+	public batch: BatchInterface = {};
 	@ViewChild('emailRef') emailRef: ElementRef;
 	datas: any[] = [];
     batches: any[] = [];
@@ -27,16 +28,60 @@ export class NewBatchesComponent implements OnInit {
     courses: any[] = [];
     subjects: any[] = [];
     faculties:any[] = [];
+    id:number=0;
   	constructor(
         private restfull: RestfullApiService,
         private router: Router,
-        private toastr: ToastrService) { }
+        private toastr: ToastrService
+        private route: ActivatedRoute) { }
 
     ngOnInit() {
+    	this.getbatch();
         this.getCategories();
         this.getCourses();
         this.getSubjects();
         this.getFaculties();
+    }
+    public getbatch(){
+    	this.loader=true;
+    	this.route.params.subscribe((params) => {
+            this.id = params['id'];
+            if(this.id>0){
+            	this.restfull.get('/batches/'+this.id).subscribe(result => {
+		            if(result.success){
+		                this.datas = result.data;
+		                this.batch.name=result.data.name;
+		                this.batch.divison=result.data.divison;
+		                this.batch.category_id=result.data.category_id;
+		                this.batch.course_id=result.data.course_id;
+		                this.batch.subject_ids=[1,2];
+		                this.batch.faculty_ids=[1];
+		                this.loader=false;
+		            }
+		            else {
+		            	this.loader=false;
+		                this.datas = [];
+		                let x='Data Not Found.';
+		                this.toastr.error(x);
+		                this.router.navigate(['batch/'+this.id]);
+		            }
+		        }, error => {
+		        		this.loader = false;
+		                let x='Error on geting batch data.';
+		                if(error.message){
+		                    x=error.message;
+		                }else if(error.reason){
+		                    x=error.reason;
+		                }
+		                //this.getValidationMsg({ reason: { name: [x] } });
+		                this.toastr.error(x);
+		                this.router.navigate(['batch/'+this.id]);
+		        });
+            }else{
+            	this.loader=false;
+        		this.router.navigate(['batch/'+this.id]);
+        	}
+        });
     }
     public getCourses(){
     	this.restfull.get('/courses').subscribe(result => {
@@ -142,16 +187,20 @@ export class NewBatchesComponent implements OnInit {
     }
     public onSubmit(data){
     	console.log(data);
-    	data.code='sd';
-    	data.is_active=0;
     	this.loader=true;
-    	this.restfull.post('/batches', data).subscribe(result => {
-    		this.toastr.success('Success', 'Batch created successfully.');
-            this.router.navigate(['batches']);
+    	this.restfull.post('/batches/'+this.id, data).subscribe(result => {
+    		this.toastr.success('Success', 'Batch updated successfully.');
+            this.router.navigate(['batch/'+this.id]);
         }, error => {
             this.loader = false;
             console.log(error);
             this.getValidationMsg(error);
         });
     }
+}
+export interface BatchInterface {
+    name?: string;
+    divison?:string;
+    category_id?:number;
+    course_id?:number;
 }

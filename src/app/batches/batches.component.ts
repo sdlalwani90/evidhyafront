@@ -123,4 +123,7 @@ export class BatchesComponent implements OnInit {
     public newbatch(){
         this.router.navigate(['/batch/new']);
     }
+    public viewbatch(id){
+        this.router.navigate(['/batch/'+id]);
+    }
 }

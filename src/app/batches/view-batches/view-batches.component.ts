@@ -1,5 +1,5 @@
 import { Component, OnInit,ViewChild, ElementRef  } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router ,ActivatedRoute} from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
@@ -7,21 +7,24 @@ import 'rxjs/Rx';
 import { RestfullApiService } from '../../services/core/restfull-api.service';
 
 @Component({
-  selector: 'abe-new-batches',
-  templateUrl: './new-batches.component.html',
-  styleUrls: ['./new-batches.component.scss']
+  selector: 'abe-view-batches',
+  templateUrl: './view-batches.component.html',
+  styleUrls: ['./view-batches.component.scss']
 })
-export class NewBatchesComponent implements OnInit {
-	@ViewChild('emailRef') emailRef: ElementRef;
+export class ViewBatchesComponent implements OnInit {
 	datas: any[] = [];
     batches: any[] = [];
 	loader: boolean = false;
+	@ViewChild('modalOn') private modalOn: ElementRef;
+    @ViewChild('modalOff') private modalOff: ElementRef;
+    @ViewChild('emailRef') emailRef: ElementRef;
 	@ViewChild('modalValidate') modalValidate: ElementRef;
     @ViewChild('modalSuccess') modalSuccess: ElementRef;
     validatemassages:any[] =[];
 	successmassages: any[]=[];
 	totalbaches:number=0;
 	sorting:number=0;
+	id:number=0;
     serachtxt:any='';
     categories: any[] = [];
     courses: any[] = [];
@@ -30,13 +33,50 @@ export class NewBatchesComponent implements OnInit {
   	constructor(
         private restfull: RestfullApiService,
         private router: Router,
-        private toastr: ToastrService) { }
+        private toastr: ToastrService,
+        private route: ActivatedRoute) { }
 
     ngOnInit() {
+    	this.getbatch();
         this.getCategories();
         this.getCourses();
         this.getSubjects();
         this.getFaculties();
+    }
+    public getbatch(){
+    	this.loader=true;
+    	this.route.params.subscribe((params) => {
+            this.id = params['id'];
+            if(this.id>0){
+            	this.restfull.get('/batches/'+this.id).subscribe(result => {
+		            if(result.success){
+		                this.datas = result.data;
+		                this.loader=false;
+		            }
+		            else {
+		            	this.loader=false;
+		                this.datas = [];
+		                let x='Data Not Found.';
+		                this.toastr.error(x);
+		                this.router.navigate(['batches']);
+		            }
+		        }, error => {
+		        		this.loader = false;
+		                let x='Error on geting batch data.';
+		                if(error.message){
+		                    x=error.message;
+		                }else if(error.reason){
+		                    x=error.reason;
+		                }
+		                //this.getValidationMsg({ reason: { name: [x] } });
+		                this.toastr.error(x);
+		                this.router.navigate(['batches']);
+		        });
+            }else{
+            	this.loader=false;
+        		this.router.navigate(['batches']);
+        	}
+        });
     }
     public getCourses(){
     	this.restfull.get('/courses').subscribe(result => {
@@ -140,18 +180,37 @@ export class NewBatchesComponent implements OnInit {
         });
         if (this.successmassages.length != 0) this.modalSuccess.nativeElement.click();
     }
-    public onSubmit(data){
-    	console.log(data);
-    	data.code='sd';
-    	data.is_active=0;
-    	this.loader=true;
-    	this.restfull.post('/batches', data).subscribe(result => {
-    		this.toastr.success('Success', 'Batch created successfully.');
+    public editbatch() {
+        this.router.navigate(['batch/update/'+this.id]);
+    }
+    public deletebatch() {
+        this.modalOn.nativeElement.click();
+    }
+    public Yes() {
+    	this.loader = true;
+        this.restfull.delete('/batches/' + this.id)
+        .subscribe(result => {
+        	this.loader = false;
+            let x='Batch deleted successfully.';
+            if(result.message){
+            	x=result.message;
+            }
+            this.toastr.success(x);
             this.router.navigate(['batches']);
         }, error => {
-            this.loader = false;
-            console.log(error);
-            this.getValidationMsg(error);
+        	this.loader = false;
+            let x='Error on deleting this batch.';
+            if(error.message){
+                x=error.message;
+            }else if(error.reason){
+                x=error.reason;
+            }
+            this.toastr.error(x);
         });
+    
     }
+    public No() {
+        this.modalOff.nativeElement.click();
+    }
+    
 }

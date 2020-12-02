@@ -12,7 +12,7 @@
         </div>
 		<div class="col-md-12 underline">
 			<div class="col-md-12">
-				<span class="page_headder">New Batch</span>		
+				<span class="page_headder">Update Batch</span>		
 			</div>	
 		</div>
 		<div class="claer"></div>
@@ -21,12 +21,12 @@
                 <div class="form-row">
                 	<div class="form-group col-md-6">
                 		<label class="control-label">Batch Name</label>
-                		<input type="text" class="form-control" id="name" name="name" ngModel placeholder="Batch Name">
+                		<input type="text" class="form-control" name="name" [(ngModel)]="batch.name" placeholder="Batch Name">
                 	</div>
                 	<div class="clear"></div>
                 	<div class="form-group col-md-6">
                 		<label class="control-label">Category</label>
-                        <ng-select [clearable]=false name="category_id" id="category_id" ngModel placeholder="Select Category">
+                        <ng-select [clearable]=false name="category_id" id="category_id" [(ngModel)]="batch.category_id" placeholder="Select Category">
                             <ng-option *ngFor="let category of categories" [value]="category.id" >
                                 {{category.name}}
                             </ng-option>
@@ -35,12 +35,12 @@
                 	<div class="clear"></div>
                 	<div class="form-group col-md-6">
                 		<label class="control-label">Division</label>
-                		<input type="text" class="form-control" id="divsion" name="divsion" ngModel placeholder="Division">
+                		<input type="text" class="form-control" id="division" name="division" [(ngModel)]="batch.division" placeholder="Division">
                 	</div>
                 	<div class="clear"></div>
                 	<div class="form-group col-md-6">
                 		<label class="control-label">Course</label>
-                        <ng-select [clearable]=false name="course_id" id="course_id" ngModel placeholder="Select Course">
+                        <ng-select [clearable]=false name="course_id" id="course_id" [(ngModel)]="batch.course_id" placeholder="Select Course">
                             <ng-option *ngFor="let course of courses" [value]="course.id" >
                                 {{course.name}}
                             </ng-option>
@@ -49,7 +49,7 @@
                 	<div class="clear"></div>
                 	<div class="form-group col-md-6">
                 		<label class="control-label">Subject</label>
-                        <ng-select [clearable]=false name="subject_ids" id="subject_ids" [multiple]="true" [closeOnSelect]="false" [hideSelected]="true" ngModel placeholder="Select Subject">
+                        <ng-select [clearable]=false name="subject_ids" id="subject_ids" [multiple]="true" [closeOnSelect]="false" [hideSelected]="true" [(ngModel)]="batch.subject_ids" placeholder="Select Subject">
                             <ng-option *ngFor="let subject of subjects" [value]="subject.id" >
                                 {{subject.name}}
                             </ng-option>
@@ -58,7 +58,7 @@
                 	<div class="clear"></div>
                 	<div class="form-group col-md-6">
                 		<label class="control-label">Faculty</label>
-                        <ng-select [clearable]=false name="faculty_ids" id="faculty_ids" [multiple]="true" [closeOnSelect]="false" [hideSelected]="true" ngModel placeholder="Select Faculty">
+                        <ng-select [clearable]=false name="faculty_ids" id="faculty_ids" [multiple]="true" [closeOnSelect]="false" [hideSelected]="true" [(ngModel)]="batch.faculty_ids" placeholder="Select Faculty">
                             <ng-option *ngFor="let faculty of faculties" [value]="faculty.id" >
                                 {{faculty.first_name}} {{faculty.last_name}}
                             </ng-option>
@@ -66,7 +66,7 @@
                 	</div>
                 	<div class="clear"></div>
                 	<div class="form-group col-md-6 text-center" >
-                        <input type="submit" class="btn btn-success" value="Save" id="submit" (click)="onSubmit(form.value)" />
+                        <input type="submit" class="btn btn-success" value="Update" id="submit" (click)="onSubmit(form.value)" />
                         <!-- *ngIf="permissionObj.create" -->
                     </div>   
                 </div>

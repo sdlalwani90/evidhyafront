@@ -48,7 +48,7 @@
 		<div class="claer"></div>
 		<!-- <ng-container > -->
 			<div class="col-md-3 mb-4" *ngFor="let data of datas| testsearch:serachtxt;">
-				<div class="batch_detail raw">
+				<div class="batch_detail raw" (click)="viewbatch(data.id)">
 					<div class="f1 long_text_cut">
 						<span class="f_name" title="{{data.name}}">{{data.name}}</span>
 					</div>
