@@ -1,0 +1,118 @@
+<abe-header></abe-header>
+<div class="container">
+	<div class="raw">
+		<div *ngIf="loader" class="loader-back">
+            <div class="loader">
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+            </div>
+        </div>
+		<div class="col-md-12 underline">
+			<div class="col-md-6">
+				<span class="page_headder">Batches ({{totalbaches}})</span>		
+			</div>	
+		  	<div class="col-md-3">
+		  		<div class="btn-group">
+		  		<input type="text" id="searchinput" [(ngModel)]="serachtxt" name="serachtxt" class="form-control" placeholder="Search for Batches">
+		  		  <span id="searchclear" (click)="claerserach()" class="glyphicon glyphicon-remove-circle"></span>
+		  		</div>
+		  	</div>
+		  	<div class="col-md-3 pull-right">
+		  		<div class="dropdown">
+				  <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				    <i class="glyphicon glyphicon-sort"></i>&nbsp;Sort&nbsp;&nbsp;
+				    <span class="caret"></span>
+				  </button>
+				  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+				    <li [ngClass]="sorting==1 ? 'active' : ''">
+				    	<a (click)="batch_sort(1)">Batch Name(A to Z)</a>
+				    </li>
+				    <li [ngClass]="sorting==2 ? 'active' : ''">
+				    	<a (click)="batch_sort(2)">Batch Name(Z to A)</a>
+				    </li>
+				    <li [ngClass]="sorting==3 ? 'active' : ''">
+				    	<a (click)="batch_sort(3)">Recently Created(A to Z)</a>
+				    </li>
+				    <li [ngClass]="sorting==4 ? 'active' : ''">
+				    	<a (click)="batch_sort(4)">Recently Created(Z to A)</a>
+				    </li>
+				  </ul>
+				</div>
+				&nbsp;&nbsp;
+				<button (click)="newbatch()" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>&nbsp;Create Batch</button>
+		  	</div>
+		</div>
+		<div class="claer"></div>
+		<!-- <ng-container > -->
+			<div class="col-md-3 mb-4" *ngFor="let data of datas| testsearch:serachtxt;">
+				<div class="batch_detail raw">
+					<div class="f1 long_text_cut">
+						<span class="f_name" title="{{data.name}}">{{data.name}}</span>
+					</div>
+					<div class="clear"></div>
+					<div class="f1 ">
+						<span class="c_name">{{data.course.name ? data.course.name : 'No Cource'}}</span>
+					</div>
+				</div>
+				<!-- <p class="f1">{{data.name}}</p>
+				<p class="f2">{{data.name}}</p>
+				<p class="f3">{{data.name}}</p> -->
+			</div>
+		<!-- </ng-container> -->
+	</div>
+</div>
+<div id="validation" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">Validation Message</h4>
+            </div>
+            <form class="form-horizontal">
+                <div class="modal-body">
+                    <div class="form-group col-md-12 col-sm-12">
+                        <ul *ngFor="let validatemassage of validatemassages">
+                            <li>{{validatemassage}}</li>
+                        </ul>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <span [hidden]="true">
+                    <button #modalValidate class="btn btn-default btn-xs text-muted" data-toggle="modal"
+                        data-target="#validation" type="button"></button>
+                </span>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="success" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">Success Message</h4>
+            </div>
+            <form class="form-horizontal">
+                <div class="modal-body">
+                    <div class="form-group col-md-12 col-sm-12">
+                        <ul *ngFor="let successmassage of successmassages">
+                            <li>{{successmassage}}</li>
+                        </ul>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <span [hidden]="true">
+                    <button #modalSuccess class="btn btn-default btn-xs text-muted" data-toggle="modal"
+                        data-target="#success" type="button"></button>
+                </span>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
