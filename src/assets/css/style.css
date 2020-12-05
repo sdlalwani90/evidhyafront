@@ -1526,3 +1526,21 @@ a.badge-hover:hover .badge, a.badge-hover:focus .badge, a.badge-hover:active .ba
 .f1{
 	padding-bottom: 10px;
 }
+.pad-0{
+	padding: 0 !important;
+}
+.batches > .list-group-item{
+    padding: 22px 24px !important;
+    border:none;
+    background-color: transparent;
+    /*margin-bottom: 3px;*/
+    font-size: 20px;
+}
+.batches > .list-group-item.active{
+	color: #337ab7 !important;
+	font-size: 20px;
+}
+.batches > a.list-group-item:hover{
+	color: #337ab7 !important;
+	background-color: transparent !important;
+}

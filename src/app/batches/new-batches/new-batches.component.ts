@@ -146,12 +146,23 @@ export class NewBatchesComponent implements OnInit {
     	data.is_active=0;
     	this.loader=true;
     	this.restfull.post('/batches', data).subscribe(result => {
-    		this.toastr.success('Success', 'Batch created successfully.');
+    		this.toastr.success('Batch created successfully.','Success');
             this.router.navigate(['batches']);
         }, error => {
             this.loader = false;
-            console.log(error);
-            this.getValidationMsg(error);
+            let x='Error on creating Batch.';
+            if(error.errors){
+                x=error.errors;
+                this.getValidationMsg(error);
+            }else if(error.message){
+                x=error.message;
+                this.toastr.error(x);
+            }else{
+                this.toastr.error(x);
+            }
         });
+    }
+    public back(){
+        this.router.navigate(['batches']);
     }
 }

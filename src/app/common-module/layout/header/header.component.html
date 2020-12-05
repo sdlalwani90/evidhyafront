@@ -9,7 +9,15 @@
         	<a (click)="pagecall('dashboard')" >Dashboard</a>
         </li>
       </ul>
-      <ul class="nav navbar-nav navbar-right">
+      <ul class="nav navbar-nav navbar-right" >
+        <li *ngIf="username" [ngClass]="openpage.indexOf('categor') !== -1 ? 'dropdown active' : 'dropdown'">
+          <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">System <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li [ngClass]="openpage.indexOf('categor') !== -1 ? 'active' : ''">
+              <a (click)="pagecall('categories')">Categories</a>
+            </li>
+          </ul>
+        </li>
         <li class="dropdown" *ngIf="username">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{username}} <span class="caret"></span></a>
           <ul class="dropdown-menu">

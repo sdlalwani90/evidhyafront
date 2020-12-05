@@ -32,7 +32,7 @@ export class EditBatchesComponent implements OnInit {
   	constructor(
         private restfull: RestfullApiService,
         private router: Router,
-        private toastr: ToastrService
+        private toastr: ToastrService,
         private route: ActivatedRoute) { }
 
     ngOnInit() {
@@ -63,7 +63,7 @@ export class EditBatchesComponent implements OnInit {
 		                this.datas = [];
 		                let x='Data Not Found.';
 		                this.toastr.error(x);
-		                this.router.navigate(['batch/'+this.id]);
+		                this.router.navigate(['batch/'+this.id+'/overview']);
 		            }
 		        }, error => {
 		        		this.loader = false;
@@ -75,11 +75,11 @@ export class EditBatchesComponent implements OnInit {
 		                }
 		                //this.getValidationMsg({ reason: { name: [x] } });
 		                this.toastr.error(x);
-		                this.router.navigate(['batch/'+this.id]);
+		                this.router.navigate(['batch/'+this.id+'/overview']);
 		        });
             }else{
             	this.loader=false;
-        		this.router.navigate(['batch/'+this.id]);
+        		this.router.navigate(['batch/'+this.id+'/overview']);
         	}
         });
     }
@@ -188,14 +188,25 @@ export class EditBatchesComponent implements OnInit {
     public onSubmit(data){
     	console.log(data);
     	this.loader=true;
-    	this.restfull.post('/batches/'+this.id, data).subscribe(result => {
+    	this.restfull.put('/batches/'+this.id, data).subscribe(result => {
     		this.toastr.success('Success', 'Batch updated successfully.');
-            this.router.navigate(['batch/'+this.id]);
+            this.router.navigate(['batch/'+this.id+'/overview']);
         }, error => {
             this.loader = false;
-            console.log(error);
-            this.getValidationMsg(error);
+            let x='Error on updating batch.';
+            if(error.errors){
+                x=error.errors;
+                this.getValidationMsg(error);
+            }else if(error.message){
+                x=error.message;
+                this.toastr.error(x);
+            }else{
+                this.toastr.error(x);
+            }
         });
+    }
+    public back(){
+        this.router.navigate(['batch/'+this.id+'/overview']);
     }
 }
 export interface BatchInterface {
@@ -203,4 +214,6 @@ export interface BatchInterface {
     divison?:string;
     category_id?:number;
     course_id?:number;
+    subject_ids?:any;
+    faculty_ids?:any;
 }

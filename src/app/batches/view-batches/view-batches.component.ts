@@ -25,6 +25,7 @@ export class ViewBatchesComponent implements OnInit {
 	totalbaches:number=0;
 	sorting:number=0;
 	id:number=0;
+	stype:string='';
     serachtxt:any='';
     categories: any[] = [];
     courses: any[] = [];
@@ -47,31 +48,55 @@ export class ViewBatchesComponent implements OnInit {
     	this.loader=true;
     	this.route.params.subscribe((params) => {
             this.id = params['id'];
+            this.stype=params['type'];
+            console.log(this.stype);
             if(this.id>0){
-            	this.restfull.get('/batches/'+this.id).subscribe(result => {
-		            if(result.success){
-		                this.datas = result.data;
-		                this.loader=false;
-		            }
-		            else {
-		            	this.loader=false;
-		                this.datas = [];
-		                let x='Data Not Found.';
-		                this.toastr.error(x);
-		                this.router.navigate(['batches']);
-		            }
-		        }, error => {
-		        		this.loader = false;
-		                let x='Error on geting batch data.';
-		                if(error.message){
-		                    x=error.message;
-		                }else if(error.reason){
-		                    x=error.reason;
-		                }
-		                //this.getValidationMsg({ reason: { name: [x] } });
-		                this.toastr.error(x);
-		                this.router.navigate(['batches']);
-		        });
+            	if(this.stype=='overview'){
+            		this.restfull.get('/batches/'+this.id).subscribe(result => {
+			            if(result.success){
+			                this.datas = result.data;
+			                this.loader=false;
+			            }
+			            else {
+			            	this.loader=false;
+			                this.datas = [];
+			                let x='Data Not Found.';
+			                this.toastr.error(x);
+			                this.router.navigate(['batches']);
+			            }
+			        }, error => {
+			        		this.loader = false;
+			                let x='Error on geting batch data.';
+			                if(error.message){
+			                    x=error.message;
+			                }else if(error.reason){
+			                    x=error.reason;
+			                }
+			                //this.getValidationMsg({ reason: { name: [x] } });
+			                this.toastr.error(x);
+			                this.router.navigate(['batches']);
+			        });	
+            	}else if(this.stype=='attendance'){
+
+            	}else if(this.stype=='students'){
+
+            	}else if(this.stype=='assignments'){
+
+            	}else if(this.stype=='announcements'){
+
+            	}else if(this.stype=='tests'){
+
+            	}else if(this.stype=='videos'){
+
+            	}else if(this.stype=='liveclasses'){
+
+                }else if(this.stype=='studymaterial'){
+
+            	}else if(this.stype=='settings'){
+
+                }else{
+                    this.router.navigate(['batches']);
+                }
             }else{
             	this.loader=false;
         		this.router.navigate(['batches']);
@@ -212,5 +237,8 @@ export class ViewBatchesComponent implements OnInit {
     public No() {
         this.modalOff.nativeElement.click();
     }
-    
+    public opensite(id){
+    	this.datas = [];
+    	this.router.navigate(['batch/'+this.id+'/'+id]);	
+    }
 }

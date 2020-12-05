@@ -38,7 +38,14 @@ export class RestfullApiService {
         }).map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error.json()));
     }
-
+    put(url, data): Observable<any> {
+        let headers = new Headers();
+        this.createAuthorizationHeader(headers);
+        return this.http.put(this.baseUrl + url, data, {
+            headers: headers
+        }).map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json()));
+    }
     delete(url): Observable<any> {
         let headers = new Headers();
         this.createAuthorizationHeader(headers);

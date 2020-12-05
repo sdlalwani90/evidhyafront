@@ -7,11 +7,13 @@ import 'rxjs/Rx';
 import { RestfullApiService } from '../services/core/restfull-api.service';
 
 @Component({
-  selector: 'abe-batches',
-  templateUrl: './batches.component.html',
-  styleUrls: ['./batches.component.scss']
+  selector: 'abe-categories',
+  templateUrl: './categories.component.html',
+  styleUrls: ['./categories.component.scss']
 })
-export class BatchesComponent implements OnInit {
+export class CategoriesComponent implements OnInit {
+    @ViewChild('modalOn') private modalOn: ElementRef;
+    @ViewChild('modalOff') private modalOff: ElementRef;
     @ViewChild('emailRef') emailRef: ElementRef;
 	datas: any[] = [];
     batches: any[] = [];
@@ -20,8 +22,9 @@ export class BatchesComponent implements OnInit {
     @ViewChild('modalSuccess') modalSuccess: ElementRef;
     validatemassages:any[] =[];
 	successmassages: any[]=[];
-	totalbaches:number=0;
+	total:number=0;
 	sorting:number=0;
+	delete_id:number=0;
     serachtxt:any='';
   constructor(
         private restfull: RestfullApiService,
@@ -33,11 +36,10 @@ export class BatchesComponent implements OnInit {
     }
     public getDataList() {
     	this.loader = true;
-        this.restfull.get('/batches').subscribe(result => {
+        this.restfull.get('/categories').subscribe(result => {
             if(result.success){
                 this.datas = result.data;
-                this.batches = result.data;
-                this.totalbaches=result.data.length;
+                this.total=result.data.length;
                 this.loader = false;
             }
             else {
@@ -77,53 +79,44 @@ export class BatchesComponent implements OnInit {
         });
         if (this.successmassages.length != 0) this.modalSuccess.nativeElement.click();
     }
-    public batch_sort(id){
-        if(id==1){
-            this.datas.sort((a, b) => {
-              if (a.name > b.name) {
-                return 1;
-              }
-              if (a.name < b.name) {
-                return -1;
-              }
-              return 0;
-            });
-            this.sorting=1;
-        }
-        else if(id==2){
-            this.datas.sort((a, b) => {
-              if (b.name > a.name) {
-                return 1;
-              }
-              if (b.name < a.name) {
-                return -1;
-              }
-              return 0;
-            });
-            this.sorting=2;
-        }
-        else if(id==3){
-            this.datas.sort((a, b) => {
-              return <any>new Date(a.created_at) - <any>new Date(b.created_at);
-            });
-            this.sorting=3;
-        }
-        else if(id==4){
-            this.datas.sort((a, b) => {
-              return <any>new Date(b.created_at) - <any>new Date(a.created_at);
-            });
-            this.sorting=4;
-        }else{
-            this.sorting=0;
-        }
-    }
     public claerserach(){
         this.serachtxt='';
     }
     public newbatch(){
-        this.router.navigate(['/batch/new']);
+        this.router.navigate(['/category/new']);
     }
-    public viewbatch(id){
-        this.router.navigate(['/batch/'+id+'/overview']);
+    public editcategory(id){
+        this.router.navigate(['/category/update/'+id]);
+    }
+    public deletecategory(id) {
+    	this.delete_id=id;
+        this.modalOn.nativeElement.click();
+    }
+    public Yes() {
+    	if(this.delete_id){
+    		this.loader = true;
+	        this.restfull.delete('/categories/' + this.delete_id)
+	        .subscribe(result => {
+	        	this.loader = false;
+	            let x='Category deleted successfully.';
+	            if(result.message){
+	            	x=result.message;
+	            }
+	            this.toastr.success(x);
+	            this.refresh();
+	        }, error => {
+	        	this.loader = false;
+	            let x='Error on deleting this Category.';
+	            if(error.message){
+	                x=error.message;
+	            }else if(error.reason){
+	                x=error.reason;
+	            }
+	            this.toastr.error(x);
+	        });	
+    	}
+    }
+    public No() {
+        this.modalOff.nativeElement.click();
     }
 }
